@@ -59,13 +59,19 @@ public class AES {
     }
 
     public static void encryptFile(String algorithm, SecretKey key, IvParameterSpec iv,
-                                   FileInputStream inputStream, File outputFile) throws IOException, NoSuchPaddingException,
+                                   File inputFile, File outputFile) throws IOException, NoSuchPaddingException,
             NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException,
             BadPaddingException, IllegalBlockSizeException {
 
         Cipher cipher = Cipher.getInstance(algorithm);
-        cipher.init(Cipher.ENCRYPT_MODE, key, iv);
-        //FileInputStream inputStream = new FileInputStream(inputFile);
+        if(algorithm.contains("ECB")){
+            cipher.init(Cipher.ENCRYPT_MODE, key);
+        }
+        else{
+            cipher.init(Cipher.ENCRYPT_MODE, key, iv);
+        }
+
+        FileInputStream inputStream = new FileInputStream(inputFile);
         FileOutputStream outputStream = new FileOutputStream(outputFile);
         byte[] buffer = new byte[64];
         int bytesRead;
@@ -81,6 +87,7 @@ public class AES {
         }
         inputStream.close();
         outputStream.close();
+
     }
 
 
